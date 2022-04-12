@@ -144,8 +144,8 @@ public class Main {
                 voisins.add(voisinDroit);
                 voisins.add(voisinGauche);
             } else {
-                boolean voisinDroit = voisinDroit = true; // sinon 2 voisin : gauche et droit
-                boolean voisinGauche = voisinGauche = true;
+                boolean voisinDroit = true; // sinon 2 voisin : gauche et droit
+                boolean voisinGauche = true;
                 voisins.add(voisinDroit);
                 voisins.add(voisinGauche);
             }
