@@ -1,177 +1,173 @@
 package com.company;
 
-// import java.util.Scanner;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-public class virus {
+public class Main {
 
-    public static void main(String[] args){
-        virus(Collections.singletonList(new int[]{2, 3}),3);
+    public static void main(String[] args) {
+
+        // appele de la fonction virus :
+        // positions du/des patients0
+        int[] test = { 1, 2 };
+        int[] test1 = { 0, 2 };
+
+        List patients0 = new ArrayList(); // declarer la liste des patients0
+
+        // ajouter les positions à la liste
+        patients0.add(test1);
+        patients0.add(test);
+
+        int n = 3; // declarer taille du tableau
+
+        System.out.println(virus(patients0, n)); // appele fonction et print console pour afficher resultat
+
     }
-
 
     public static List<Integer> virus(List<int[]> patients0, int n) {
 
-        //tableau d'objet (monde qui contient chaque patient) de taille n*n sachant que n>0
-        Patient [][] monde;           //tableau d'objet
-        monde = new Patient[n][n];    //instence du tableau avec une taille n par n
+        // variables :
+        List<Integer> listvirus = new ArrayList<>(); // list du nombres d'infecté a chaque pas de temps
+        int countInfected = 0; // compteur d'infecté
+        List<Patient> infectedList = new ArrayList<>(); // patient infecté
+        Patient[][] monde = new Patient[n][n]; // declarer monde de taille n sur n
 
-        int countInfected = patients0.size() ;
-        ArrayList <Patient> infectedList = new ArrayList<Patient>() ;
-
-        virus(patients0, n).add(countInfected);
-
-        for (int x = 0; x<n; x++){
-            for (int y = 0; y<n; y++){   //pour chaque patient du monde (du tableau)
-             monde[x][y].setPosX(x);    // attribuer la position x dans le monde au patient correspondant
-             monde[x][y].setPosY(y);    // attribuer la position y dans le monde au patient correspondant
+        for (int posX = 0; posX < n; posX++) { // pour chaque colonnes du tableau
+            for (int posY = 0; posY < n; posY++) { // pour chaque lignes du tableau
+                monde[posX][posY] = new Patient(); // initialiser la case du monde en lui attribuant un obj patient
+                monde[posX][posY].setPosX(posX); // set la valeur de x du patient dans le monde
+                monde[posX][posY].setPosY(posY); // set la valeur de y du patient dans le monde
             }
         }
 
-        for(int i=0; i<patients0.size();i++){  //pour tout les patients infecter au depart patients0
-            var infected = patients0.get(i) ;   //recuperer chaque position des infectées en fonction de i
-            for (int j=0; j<infected.length;j++){
-                int countCase=0;   //compter le numero de case pour
-                for (int x = 0; x<n; x++) {
-                    for (int y = 0; y < n; y++) {
-                        if (infected[j] == countCase) { //comparer avec la valeur de patients0
-                            monde[x][y].setInfected(true);  //si le numero de case correspond alors infecter
-                        }
-                    countCase += 1;  //implementer a chaque fois qu'on change de case
+        for (int i = 0; i < patients0.size(); i++) { // pour tout les patients infecter au depart (patients0)
+            var infected = patients0.get(i); // recuperer les positions de l'infecté a l'index i
+            int posX = infected[0]; // declarer la position x pour la premiere valeur
+            int posY = infected[1]; // puis celle de y pour la seconde valeur
+            monde[posX][posY].setInfected(true); // set la valeur infecté de l'obj patient a vrai
+            infectedList.add(monde[posX][posY]); // et ajouter l'obj patient à la list des infectés
+        }
+        countInfected += patients0.size(); // compter du nombre d'infectés total
+        listvirus.add(countInfected); // ajout du compte de patient initialement infecté
+
+        while (countInfected < (n * n)) { // tant que tout le monde n'est pas infecté
+            List<Patient> nonInfected = new ArrayList<>(); // patient à infecter
+            for (int i = 0; i < infectedList.size(); i++) { // pour chaque patient deja infecté
+                Patient infected = infectedList.get(i);
+                int posX = infected.getPosX(); // recuperer sa position x et y
+                int posY = infected.getPosY();
+                List voisin = infected.getVoisins(n); // puis recuperer ses voisins direct
+                boolean voisinD = (boolean) voisin.get(0);
+                boolean voisinG = (boolean) voisin.get(1);
+                boolean voisinB = (boolean) voisin.get(2);
+                boolean voisinH = (boolean) voisin.get(3);
+                if (voisinD == true) { // si voisin droit existe
+                    Patient voisinDroite = monde[(posX + 1)][posY];
+                    if (!voisinDroite.isInfected) { // si il est pas infecté
+                        voisinDroite.setInfected(true); // alors l'infecter
+                        nonInfected.add(voisinDroite); // l'ajouter à la list de patient à infecter
+                    }
+                }
+                if (voisinG == true) { // si voisin gauche existe
+                    Patient voisinGauche = monde[(posX - 1)][posY];
+                    if (!voisinGauche.isInfected) { // si il est pas infecté
+                        voisinGauche.setInfected(true);// alors l'infecter
+                        nonInfected.add(voisinGauche);// l'ajouter à la list de patient à infecter
+                    }
+                }
+                if (voisinB == true) { // si voisin bas existe
+                    Patient voisinBas = monde[posX][(posY + 1)];
+                    if (!voisinBas.isInfected) { // si il est pas infecté
+                        voisinBas.setInfected(true);// alors l'infecter
+                        nonInfected.add(voisinBas);// l'ajouter à la list de patient à infecter
+                    }
+                }
+                if (voisinH == true) { // si voisin haut existe
+                    Patient voisinHaut = monde[posX][(posY - 1)];
+                    if (!voisinHaut.isInfected) { // si il est pas infecté
+                        voisinHaut.setInfected(true);// alors l'infecter
+                        nonInfected.add(voisinHaut);// l'ajouter à la list de patient à infecter
                     }
                 }
             }
-                    //    monde[posX][posY].setInfected(true); //rendre leur objet patient infecté
-         //   infectedList.add(monde[posX][posY]); //et les ajouter a la list d'infecter
+            for (int j = 0; j < nonInfected.size(); j++) { // pour tout les patients à infecter
+                infectedList.add(nonInfected.get(j)); // les ajouter à la list des patients infecté
+                countInfected += 1; // incrementer le compte d'infecter
+            }
+            listvirus.add(countInfected); // ajouter le nouveau compte d'infecter apres un nouveau pas de temps
+        }
+        return listvirus; // retourner la list du nb d'infecté a chaque pas de temps
+    }
+
+    static class Patient {
+        // contiens la position du patient
+        private int posX;
+        private int posY;
+        // si elle est infecté ou non (initialement a faux)
+        private boolean isInfected = false;
+
+        public int getPosX() {
+            return posX;
         }
 
-        //boucle tant que tout le monde n'est pas infecter  (pas de temps)
-        while(infectedList.size() != (n*n)) {
+        public void setPosX(int posX) {
+            this.posX = posX;
+        }
 
-            //pour chaque patient infecté
-            for (int i = 0; i<infectedList.size(); i++) {
-                var x = infectedList.get(i).getPosX();
-                var y = infectedList.get(i).getPosY();
-                var listVoisins = monde[x][y].getVoisins(n); //recuperer ses voisins proche
-                var voisinDroit = listVoisins.get(1);
-                var voisinGauche = listVoisins.get(2);
-                var voisinBas = listVoisins.get(3);
-                var voisinHaut = listVoisins.get(4);
+        public int getPosY() {
+            return posY;
+        }
 
-                if (voisinDroit==true){  //si voisin droit existe
-                    monde[x+1][y].setInfected(true); //alors l'infecter
-                }
-                if (voisinGauche==true){  //si voisin gauche existe
-                    monde[x-1][y].setInfected(true); //alors l'infecter
-                }
-                if (voisinBas==true){  //si voisin bas existe
-                    monde[x][y+1].setInfected(true); //alors l'infecter
-                }
-                if (voisinHaut==true){  //si voisin haut existe
-                    monde[x][y-1].setInfected(true); //alors l'infecter
-                }
+        public void setPosY(int posY) {
+            this.posY = posY;
+        }
+
+        public void setInfected(boolean infected) {
+            isInfected = infected;
+        }
+
+        public boolean isInfected() {
+            return isInfected;
+        }
+
+        public List<Boolean> getVoisins(int n) { // fonction pour connaitre les voisins direct du patient
+            List<Boolean> voisins = new ArrayList<>(); // liste de chaque voisin direct
+            // en fonction de x recuperer les voisins directs droite puis gauche
+            if (getPosX() == 0) { // si x est sur la colonne la plus a gauche
+                boolean voisinDroit = true; // il a un voisin droit
+                boolean voisinGauche = false; // et pas de voisin gauche
+                voisins.add(voisinDroit); // ajouter les valeurs à la list
+                voisins.add(voisinGauche);
+            } else if (getPosX() == n - 1) { // si x est sur la colonne la plus a droite
+                boolean voisinDroit = false; // pas de voisin droit
+                boolean voisinGauche = true; // et un voisin gauche
+                voisins.add(voisinDroit);
+                voisins.add(voisinGauche);
+            } else {
+                boolean voisinDroit = voisinDroit = true; // sinon 2 voisin : gauche et droit
+                boolean voisinGauche = voisinGauche = true;
+                voisins.add(voisinDroit);
+                voisins.add(voisinGauche);
             }
 
-            for (int x = 0; x<n; x++) {
-                for (int y = 0; y < n; y++) {
-                    var patient1 = monde[x][y];  //pour tous les patients
-                    boolean inList = false;
-                    if (patient1.isInfected()){ //si il est infecté
-                        for (int i = 0; i<infectedList.size(); i++){  //verifier si il est dans la list d'infecter
-                            var patient2 = infectedList.get(i);
-                            if (patient1.getPosX()==patient2.getPosX() && patient1.getPosY() == patient2.getPosY()){
-                            inList=true;
-                            }
-                        }
-                        if (inList==false){  //si non l'ajouter a la list
-                            infectedList.add(patient1);
-                            countInfected += 1;
-                        }
-                    }
-                }
+            // en fonction de y recuperer les voisins directs bas puis haut
+            if (getPosY() == 0) {
+                boolean voisinBas = true;
+                boolean voisinHaut = false;
+                voisins.add(voisinBas);
+                voisins.add(voisinHaut);
+            } else if (getPosY() == n - 1) {
+                boolean voisinBas = false;
+                boolean voisinHaut = true;
+                voisins.add(voisinBas);
+                voisins.add(voisinHaut);
+            } else {
+                boolean voisinBas = true;
+                boolean voisinHaut = true;
+                voisins.add(voisinBas);
+                voisins.add(voisinHaut);
             }
-                    //ajouter le nb d'infecter total a la liste virus
-            virus(patients0, n).add(countInfected);
+            return voisins; // retourner une list a 4 valeur(droite, gauche, bas, haut)
         }
-        return virus(patients0, n); //return list d'infecter a un index precis
-
-    }
-
-
-}
-
-
-// creer une classe patient
-class Patient{
-
-    //  contiens la position de la personne
-   private int posX;
-   private int posY;
-    //si elle est infecté ou non
-   private boolean isInfected = false;
-
-
-    public int getPosX() {
-        return posX;
-    }
-    public void setPosX(int posX) {
-        this.posX = posX;
-    }
-
-    public int getPosY() {
-        return posY;
-    }
-    public void setPosY(int posY) {
-        this.posY = posY;
-    }
-
-    public void setInfected(boolean infected) {
-        isInfected = infected;
-    }
-    public boolean isInfected() {
-        return isInfected;
-    }
-
-    //method recuperer ces voisin direct  list de tableau2 pour les positions des voisins
-
-    public ArrayList<Boolean> getVoisins(int n){
-        //en fonction de x recuperer les voisins directs
-        if(getPosX()==0){
-        boolean voisinDroit = true;
-        boolean voisinGauche =false;
-            getVoisins(n).add(voisinDroit);
-            getVoisins(n).add(voisinGauche);
-        }else if(getPosX()==n){
-            boolean voisinDroit = false;
-            boolean voisinGauche = true;
-            getVoisins(n).add(voisinDroit);
-            getVoisins(n).add(voisinGauche);
-        }else {
-            boolean voisinDroit = voisinDroit = true;
-            boolean voisinGauche = voisinGauche = true;
-            getVoisins(n).add(voisinDroit);
-            getVoisins(n).add(voisinGauche);
-        }
-
-        //en fonction de y recuperer les voisins directs
-        if(getPosY()==0 && getPosY()<n){
-            boolean voisinBas = true;
-            boolean voisinHaut = false;
-            getVoisins(n).add(voisinBas);
-            getVoisins(n).add(voisinHaut);
-        }else if(getPosX()>0 && getPosX()==n){
-            boolean voisinBas = false;
-            boolean voisinHaut = true;
-            getVoisins(n).add(voisinBas);
-            getVoisins(n).add(voisinHaut);
-        }else {
-            boolean voisinBas = true;
-            getVoisins(n).add(voisinBas);
-            boolean voisinHaut = false;
-            getVoisins(n).add(voisinHaut);
-        }
-        return getVoisins(n);
     }
 }
-
-
